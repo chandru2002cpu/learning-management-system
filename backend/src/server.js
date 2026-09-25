@@ -17,13 +17,6 @@ app.use(
   }),
 );
 
-app.options(
-  "*",
-  cors({
-    origin: env.clientUrl,
-    credentials: true,
-  }),
-);
 app.use(express.json());
 
 app.use("/api/v1", apiRoutes);
