@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
+import { env } from '../config/env.js'
 import User from '../models/user.model.js'
 import { generateToken } from '../utils/jwt.js'
+import { getSafeErrorDetails } from '../utils/errors.js'
 
 function sendError(res, status, message, errors) {
   const payload = {
@@ -43,6 +45,12 @@ export async function register(req, res) {
       return sendError(res, 400, 'Validation failed', errors)
     }
 
+    if (env.nodeEnv === 'development') {
+      const details = getSafeErrorDetails(error)
+      console.error(`Registration failed: ${details}`)
+      return sendError(res, 500, `Unable to register user: ${details}`)
+    }
+
     return sendError(res, 500, 'Unable to register user')
   }
 }
@@ -81,7 +89,13 @@ export async function login(req, res) {
         user: user.toJSON(),
       },
     })
-  } catch {
+  } catch (error) {
+    if (env.nodeEnv === 'development') {
+      const details = getSafeErrorDetails(error)
+      console.error(`Login failed: ${details}`)
+      return sendError(res, 500, `Unable to login: ${details}`)
+    }
+
     return sendError(res, 500, 'Unable to login')
   }
 }

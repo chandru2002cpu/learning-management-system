@@ -4,6 +4,7 @@ import helmet from "helmet";
 import { env } from "./config/env.js";
 import { connectDatabase } from "./config/database.js";
 import apiRoutes from "./routes/index.js";
+import { getSafeErrorDetails } from "./utils/errors.js";
 
 const app = express();
 
@@ -47,6 +48,10 @@ app.use((err, _req, res, _next) => {
       success: false,
       message: err.message,
     });
+  }
+
+  if (env.nodeEnv === "development") {
+    console.error(`Unhandled request error: ${getSafeErrorDetails(err)}`);
   }
 
   return res.status(500).json({

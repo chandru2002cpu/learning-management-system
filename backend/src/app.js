@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { env } from "./config/env.js";
 import apiRoutes from "./routes/index.js";
+import { getSafeErrorDetails } from "./utils/errors.js";
 
 const app = express();
 
@@ -35,6 +36,10 @@ app.use((err, _req, res, _next) => {
 
   if (err?.status === 400) {
     return res.status(400).json({ success: false, message: err.message });
+  }
+
+  if (env.nodeEnv === "development") {
+    console.error(`Unhandled request error: ${getSafeErrorDetails(err)}`);
   }
 
   return res

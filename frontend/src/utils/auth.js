@@ -35,5 +35,9 @@ export function getApiError(error) {
     return data.message
   }
 
+  if (import.meta.env.DEV && error?.message) {
+    return error.message
+  }
+
   return 'Something went wrong. Please try again.'
 }
