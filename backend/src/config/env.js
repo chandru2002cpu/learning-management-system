@@ -14,7 +14,7 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: Number(process.env.PORT),
   mongoUri: process.env.MONGO_URI || "",
-  clientUrl: process.env.CLIENT_URL,
+  clientUrl: process.env.CLIENT_URL.replace(/\/+$/, ""),
   jwtSecret: process.env.JWT_SECRET || "",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
   razorpayKeyId: process.env.RAZORPAY_KEY_ID || "",
